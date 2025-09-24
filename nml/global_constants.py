@@ -1467,24 +1467,88 @@ allow_extra_zoom = True
 
 allow_32bpp = True
 
-const_list = [
-    (constant_numbers, constant_number),
-    (global_parameters, param_from_info),
-    (misc_grf_bits, misc_grf_bit),
-    (patch_variables, patch_variable),
-    (named_parameters, param_from_name),
-    cargo_numbers,
-    railtype_table,
-    roadtype_table,
-    tramtype_table,
-    (item_names, item_to_id),
-    (settings, setting_from_info),
-    (config_flags, config_flag),
-    (unified_maglev_var, unified_maglev),
-    (spritegroups, create_spritegroup_ref),
-    zoom_levels,
-    bit_depths,
-]
+const_list = None
+
+structures = {}
+
+
+def update_const_list():
+    global const_list
+    const_list = [
+        (constant_numbers, constant_number),
+        (global_parameters, param_from_info),
+        (misc_grf_bits, misc_grf_bit),
+        (patch_variables, patch_variable),
+        (named_parameters, param_from_name),
+        cargo_numbers,
+        railtype_table,
+        roadtype_table,
+        tramtype_table,
+        (item_names, item_to_id),
+        (settings, setting_from_info),
+        (config_flags, config_flag),
+        (unified_maglev_var, unified_maglev),
+        (spritegroups, create_spritegroup_ref),
+        zoom_levels,
+        bit_depths,
+        (structures, lambda name, value, pos: value)
+    ]
+
+
+# initialise const_list for the global scope
+update_const_list()
+
+
+def duplicate_storage_for_constants():
+    global constant_numbers, global_parameters, misc_grf_bits, patch_variables, named_parameters, cargo_numbers
+    global railtype_table, roadtype_table, tramtype_table, item_names, settings, config_flags, unified_maglev_var
+    global spritegroups, zoom_levels, bit_depths, structures
+
+    constant_numbers = constant_numbers.copy()
+    global_parameters = global_parameters.copy()
+    misc_grf_bits = misc_grf_bits.copy()
+    patch_variables = patch_variables.copy()
+    named_parameters = named_parameters.copy()
+    cargo_numbers = cargo_numbers.copy()
+    railtype_table = railtype_table.copy()
+    roadtype_table = roadtype_table.copy()
+    tramtype_table = tramtype_table.copy()
+    item_names = item_names.copy()
+    settings = settings.copy()
+    config_flags = config_flags.copy()
+    unified_maglev_var = unified_maglev_var.copy()
+    spritegroups = spritegroups.copy()
+    zoom_levels = zoom_levels.copy()
+    bit_depths = bit_depths.copy()
+    structures = structures.copy()
+
+    update_const_list()
+
+
+def load_old_const_list(old_const_list):
+    global constant_numbers, global_parameters, misc_grf_bits, patch_variables, named_parameters, cargo_numbers
+    global railtype_table, roadtype_table, tramtype_table, item_names, settings, config_flags, unified_maglev_var
+    global spritegroups, zoom_levels, bit_depths, structures, const_list
+
+    constant_numbers = old_const_list[0][0]
+    global_parameters = old_const_list[1][0]
+    misc_grf_bits = old_const_list[2][0]
+    patch_variables = old_const_list[3][0]
+    named_parameters = old_const_list[4][0]
+    cargo_numbers = old_const_list[5]
+    railtype_table = old_const_list[6]
+    roadtype_table = old_const_list[7]
+    tramtype_table = old_const_list[8]
+    item_names = old_const_list[9][0]
+    settings = old_const_list[10][0]
+    config_flags = old_const_list[11][0]
+    unified_maglev_var = old_const_list[12][0]
+    spritegroups = old_const_list[13][0]
+    zoom_levels = old_const_list[14]
+    bit_depths = old_const_list[15]
+    structures = old_const_list[16][0]
+
+    const_list = old_const_list
 
 
 def print_stats():

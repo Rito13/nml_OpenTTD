@@ -1,0 +1,73 @@
+cargotable {
+	PASS, MAIL, GOOD, IORE, GOLD, FOOD
+}
+
+spriteset(tram_spriteset, ZOOM_LEVEL_NORMAL, BIT_DEPTH_8BPP, "opengfx_generic_trams1.pcx") {
+	[48, 56, 8, 18, -3, -10]
+	[64, 56, 20, 19, -14, -5]
+	[96, 56, 28, 15, -14, -8]
+	[144, 56, 20, 19, -6, -7]
+	[176, 56, 8, 18, -3, -10]
+	[192, 56, 20, 19, -14, -9]
+	[224, 56, 28, 15, -14, -8]
+	[272, 56, 20, 19, -6, -7]
+}
+
+switch(1, SELF, switch_length, d, (position_in_consist + d)) {
+	1: return 5;
+	return 6;
+}
+
+struct main {
+	init {
+		grf_name = string(STR_REGRESSION_NAME);
+		version = 0;
+		my_param = param[param[0]];
+	}
+
+	struct internall {
+		init {
+			a = 1;
+			b = a*(version+2) & bitmask(CC_PASSENGERS, CC_MAIL);
+		}
+
+		item(1, foster_express_tram, 89) {
+			property {
+				name: string(STR_NAME_FOSTER_EXPRESS_TRAM);
+				climates_available: bitmask(CLIMATE_TEMPERATE, CLIMATE_ARCTIC);
+				model_life: 20*a+4;
+				vehicle_life: 2*a+4;
+				introduction_date: date(1965+version, 1, 1);
+				reliability_decay: 1;
+				running_cost_base: RUNNING_COST_ROADVEH;
+				running_cost_factor: b*a;
+				cost_factor: a;
+				speed: b km/h;
+				power: 220 hp;
+				weight: 22 ton;
+				sprite_id: SPRITE_ID_NEW_ROADVEH;
+				loading_speed: 16;
+				tractive_effort_coefficient: 0.3;
+				air_drag_coefficient: 0.5;
+				cargo_capacity: ((param[0] * 5) + 5);
+				refittable_cargo_classes: bitmask(CC_PASSENGERS, CC_MAIL);
+				non_refittable_cargo_classes: NO_CARGO_CLASS;
+				misc_flags: bitmask(ROADVEH_FLAG_TRAM);
+			}
+			graphics {
+				length: switch_length(0);
+				default: foster_express_set;
+			}
+		}
+	}
+
+	grf {
+		grfid: "NML\42";
+		name: string(STR_REGRESSION_DESC);
+		desc: string(STR_REGRESSION_DESC);
+		version: 0;
+		min_compatible_version: 0;
+	}
+}
+
+main::init();

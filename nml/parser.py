@@ -44,6 +44,7 @@ from nml.ast import (
     tilelayout,
     townnames,
     tracktypetable,
+    structure,
 )
 
 
@@ -145,7 +146,9 @@ class NMLParser:
         | engine_override
         | sort_vehicles
         | basecost
-        | constant"""
+        | constant
+        | structure
+        | structure_call"""
         t[0] = t[1]
 
     #
@@ -835,3 +838,39 @@ class NMLParser:
     def p_constant(self, t):
         "constant : CONST expression EQ expression SEMICOLON"
         t[0] = constant.Constant(t[2], t[4])
+
+    def p_structure(self, t):
+        """structure : STRUCT ID LBRACE script RBRACE
+        | STRUCT ID LBRACE script initiator script RBRACE"""
+        if len(t) == 6:
+            t[0] = structure.Structure(t.lineno(1), t[2], t[4])
+        else:
+            t[0] = structure.Structure(t.lineno(1), t[2], t[4] + t[6], t[5])
+
+    def p_structure_member(self, t):
+        "structure_member : expression EQ expression"
+        t[0] = structure.Member(t[1], t[3])
+
+    def p_initiator_list(self, t):
+        """initiator_list :
+        | initiator_list structure_member SEMICOLON"""
+        if len(t) == 1:
+            t[0] = []
+        else:
+            t[0] = t[1] + [t[2]]
+
+    def p_structure_call_list(self, t):
+        """structure_call_list :
+        | structure_call_list structure_member COMMA"""
+        if len(t) == 1:
+            t[0] = []
+        else:
+            t[0] = t[1] + [t[2]]
+
+    def p_initiator(self, t):
+        "initiator : INIT LBRACE initiator_list RBRACE"
+        t[0] = structure.Initiator(t[3], t.lineno(1))
+
+    def p_structure_call(self, t):
+        "structure_call : ID COLON COLON INIT LPAREN structure_call_list RPAREN SEMICOLON"
+        t[0] = structure.StructureCall(t[1], t[6], t.lineno(1))

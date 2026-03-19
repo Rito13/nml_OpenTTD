@@ -809,8 +809,11 @@ def get_cargolist_action(cargo_list):
 
 
 def get_badgelist_action(badge_list):
+    if len(badge_list) <= 0:
+        return []
+
     index = 0
-    actions = []
+    actions = [action7.SkipAction(9, 0xA1, 4, (0x04, r"\7<"), 0x1F000000, len(badge_list))]
     while index < len(badge_list):
         last = min(index + 250, len(badge_list))
 

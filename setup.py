@@ -51,7 +51,7 @@ setup(
     author_email="info@openttd.org",
     entry_points={"console_scripts": ["nmlc = nml.main:run"]},
     ext_modules=[Extension("nml_lz77", ["nml/_lz77.c"], optional=True)],
-    python_requires=">=3.10",
+    python_requires=">=3.9",
     install_requires=[
         "Pillow>=3.4",
     ],

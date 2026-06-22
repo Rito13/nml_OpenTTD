@@ -280,6 +280,7 @@ varact2vars60x_roadvehs = {
 varact2vars_base_stations = {
     'random_bits_station' : {'var': 0x5F, 'start': 8, 'size': 16},
     # Var 48 doesn't work with newcargos, do not use
+    'station_index'       : {'var': 0x81, 'start': 0, 'size': 8},
     'had_vehicle_of_type' : {'var': 0x8A, 'start': 1, 'size': 5}, # Only read bits 1-5
     'is_waypoint'         : {'var': 0x8A, 'start': 6, 'size': 1},
     'facilities'          : {'var': 0xF0, 'start': 0, 'size': 8},
